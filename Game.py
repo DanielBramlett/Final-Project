@@ -65,10 +65,17 @@ health_label = Label(f'Health: {health}', font_name='Times New Roman', font_size
 
 def update(dt):
     #Moves player
-    if keys[key.LEFT] and player.x > path_x+player_radius:
+    if keys[key.LEFT]:
         player.x -= player_speed * dt
-    if keys[key.RIGHT] and player.x < path_width+path_x-player_radius:
-        player.x += player_speed *dt
+    if keys[key.RIGHT]:
+        player.x += player_speed * dt
+
+    if player.x > path_width+path_x-player_radius:
+        player.x =  path_width+path_x-player_radius
+
+    if player.x < path_x+player_radius:
+        player.x = path_x + player_radius
+        
     if keys[key.UP]and player.y < window_height:
        player.y += player_speed *dt
     if keys[key.DOWN]and player.y > player_radius:
