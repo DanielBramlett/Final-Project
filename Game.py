@@ -40,10 +40,10 @@ def add_obstacle(dt):
 def check_collision():
     for obstacle in obstacles:
         if (player.x - player_radius < obstacle.x + obstacle.width and
-        player.x + player_radius > obstacle.x and
-        player.y - player_radius < obstacle.y +obstacle.height and
-        player.y + player_radius > obstacle.y):
-            return obstacle
+            player.x + player_radius > obstacle.x and
+            player.y - player_radius < obstacle.y + obstacle.height and
+            player.y + player_radius > obstacle.y):
+                return obstacle
     return None
 
 path_width = 400
@@ -53,18 +53,24 @@ background = Rectangle(0,0,window_width, window_height, GREEN )
 
 path = Rectangle(path_x,0,path_width,window_height,GRAY)
 
-points_label = Label('Points: 0', font_name='Times New Roman', font_size=18, x=10, y=window_height - 30)
+points_label = Label(
+    'Points: 0',
+    font_name='times new roman',
+    font_size=18,x=10,y=window_height-30
+)
 
-points=0
-def update_points(dt):
+health = 100
+health_label = Label(f"Health: {health}", 
+                     font_name="times new roman", 
+                     font_size=18, x=10,y=window_height-60)
+
+points = 0
+def update_point(dt):
     global points
     points += 1
     points_label.text = f'Points: {points}'
-health = 100
-health_label = Label(f'Health: {health}', font_name='Times New Roman', font_size=18, x=10, y=window_height - 60)
 
 def update(dt):
-    #Moves player
     if keys[key.LEFT]:
         player.x -= player_speed * dt
     if keys[key.RIGHT]:
@@ -75,11 +81,11 @@ def update(dt):
 
     if player.x < path_x+player_radius:
         player.x = path_x + player_radius
-        
+
     if keys[key.UP]and player.y < window_height:
        player.y += player_speed *dt
     if keys[key.DOWN]and player.y > player_radius:
-       player.y -= player_speed *dt
+       player.y -= player_speed *dt        
     
     for obstacle in obstacles[:]:
         obstacle.y -= obstacle_speed * dt
@@ -87,17 +93,14 @@ def update(dt):
         if obstacle.y + obstacle_size < 0:
             obstacle.delete()
             obstacles.remove(obstacle)
+
     obstacle_hit = check_collision()
     if obstacle_hit:
         global health
         health -= 10
-        health_label.text =f'Health: {health}'
+        health_label.text = f'Health: {health}'
         obstacles.remove(obstacle_hit)
         obstacle_hit.delete()
-        if player.x > window_width/2:
-            player.x += player_radius
-        if player.x < window_width/2:
-            player.x += player_radius
 
 @window.event
 def on_draw():
@@ -110,7 +113,7 @@ def on_draw():
     points_label.draw()
     health_label.draw()
 
-pyglet.clock.schedule_interval(update_points,1)
+pyglet.clock.schedule_interval(update_point,1)
 pyglet.clock.schedule_interval(add_obstacle, 2)
 pyglet.clock.schedule_interval(update, 1/60.0)
 pyglet.app.run()
